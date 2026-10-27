@@ -129,7 +129,7 @@ You can pass a query parameter `&show=` to show any specific additional stats wi
 ![Pranesh's GitHub stats](https://github-readme-stats-fast.vercel.app/api?username=pranesh-2005&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage)
 ```
 
-Use `&show=contributions` to add **Contributions this year**, fetched from GitHub's contribution calendar from January 1 (UTC) through the current time. This counts calendar contributions, including accessible private activity, separately from commits. Compare it with the current year selected on your GitHub profile; token permissions and caching can affect the displayed total. The existing `contribs` statistic counts repositories contributed to, not contribution events.
+Use `&show=contributions` to add **Total Contributions**, fetched from GitHub's default contribution calendar for the last year. This matches the rolling-year heatmap on your profile, rather than a selected calendar year or your all-time commits. Accessible private activity is included; token permissions and caching can affect the displayed total. The existing `contribs` statistic counts repositories contributed to, not contribution events.
 
 ### Showing icons
 

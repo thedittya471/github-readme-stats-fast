@@ -38,15 +38,13 @@ const GRAPHQL_REPOS_QUERY = `
 `;
 
 const GRAPHQL_STATS_QUERY = `
-  query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!, $contributionsFrom: DateTime!, $contributionsTo: DateTime!) {
+  query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!) {
     user(login: $login) {
       name
       login
       contributionsCollection {
         totalCommitContributions,
         totalPullRequestReviewContributions
-      }
-      currentYearContributions: contributionsCollection(from: $contributionsFrom, to: $contributionsTo) {
         contributionCalendar {
           totalContributions
         }
@@ -125,11 +123,6 @@ const statsFetcher = async ({
   includeDiscussions,
   includeDiscussionsAnswers,
 }) => {
-  const now = new Date();
-  const contributionsFrom = new Date(
-    Date.UTC(now.getUTCFullYear(), 0, 1),
-  ).toISOString();
-  const contributionsTo = now.toISOString();
   let stats;
   let hasNextPage = true;
   let endCursor = null;
@@ -141,8 +134,6 @@ const statsFetcher = async ({
       includeMergedPullRequests,
       includeDiscussions,
       includeDiscussionsAnswers,
-      contributionsFrom,
-      contributionsTo,
     };
     let res = await retryer(fetcher, variables);
     if (res.data.errors) {
@@ -301,7 +292,7 @@ const fetchStats = async (
 
   stats.name = user.name || user.login;
   stats.totalContributions =
-    user.currentYearContributions.contributionCalendar.totalContributions;
+    user.contributionsCollection.contributionCalendar.totalContributions;
 
   // if include_all_commits, fetch all commits using the REST API.
   if (include_all_commits) {

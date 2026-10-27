@@ -31,10 +31,8 @@ const statsResponse = {
     user: {
       name: "Test User",
       login: "testuser",
-      currentYearContributions: {
-        contributionCalendar: { totalContributions: 922 },
-      },
       contributionsCollection: {
+        contributionCalendar: { totalContributions: 958 },
         totalCommitContributions: 100,
         totalPullRequestReviewContributions: 10,
       },

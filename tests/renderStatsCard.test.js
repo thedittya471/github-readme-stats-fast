@@ -62,7 +62,7 @@ describe("Test renderStatsCard", () => {
   });
 
   it.each([0, 922])(
-    "shows calendar-year contributions (%i) only when requested",
+    "shows heatmap contributions (%i) only when requested",
     (totalContributions) => {
       const data = { ...stats, totalContributions };
       document.body.innerHTML = renderStatsCard(data);
@@ -75,7 +75,7 @@ describe("Test renderStatsCard", () => {
       expect(getByTestId(document.body, "contributions")).toHaveTextContent(
         String(totalContributions),
       );
-      expect(document.body).toHaveTextContent("Contributions this year:");
+      expect(document.body).toHaveTextContent("Total Contributions:");
       expect(getByTestId(document.body, "commits")).toHaveTextContent("200");
       document.body.innerHTML = renderStatsCard(data, {
         show: ["contributions"],

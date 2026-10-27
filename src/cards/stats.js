@@ -281,7 +281,7 @@ const renderStatsCard = (stats, options = {}) => {
   if (show.includes("contributions")) {
     STATS.contributions = {
       icon: icons.contribs,
-      label: "Contributions this year",
+      label: "Total Contributions",
       value: totalContributions,
       id: "contributions",
     };

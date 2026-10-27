@@ -38,10 +38,8 @@ const data_stats = {
     user: {
       name: stats.name,
       repositoriesContributedTo: { totalCount: stats.contributedTo },
-      currentYearContributions: {
-        contributionCalendar: { totalContributions: 922 },
-      },
       contributionsCollection: {
+        contributionCalendar: { totalContributions: 958 },
         totalCommitContributions: stats.totalCommits,
         totalPullRequestReviewContributions: stats.totalReviews,
       },
@@ -109,12 +107,12 @@ describe("Test /api/", () => {
     expect(res.send).toBeCalledWith(renderStatsCard(stats, { ...req.query }));
   });
 
-  it("renders calendar-year contributions from the API", async () => {
+  it("renders heatmap contributions from the API", async () => {
     const { req, res } = faker({ show: "contributions" }, data_stats);
     await api(req, res);
     const svg = res.send.mock.calls[0][0];
-    expect(svg).toContain("Contributions this year:");
-    expect(svg).toMatch(/data-testid="contributions"\s*>922</);
+    expect(svg).toContain("Total Contributions:");
+    expect(svg).toMatch(/data-testid="contributions"\s*>958</);
   });
 
   it("should render error card on error", async () => {

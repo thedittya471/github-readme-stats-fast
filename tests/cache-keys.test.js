@@ -31,10 +31,8 @@ process.env.GITHUB_TOKEN = "test-token-1";
 const statsUser = {
   name: "Test User",
   login: "testuser",
-  currentYearContributions: {
-    contributionCalendar: { totalContributions: 922 },
-  },
   contributionsCollection: {
+    contributionCalendar: { totalContributions: 958 },
     totalCommitContributions: 123456,
     totalPullRequestReviewContributions: 12345,
     restrictedContributionsCount: 5432,
