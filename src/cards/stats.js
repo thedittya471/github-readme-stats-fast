@@ -204,6 +204,7 @@ const renderStatsCard = (stats, options = {}) => {
     name,
     totalStars,
     totalCommits,
+    totalContributions,
     totalIssues,
     totalPRs,
     totalPRsMerged,
@@ -277,6 +278,14 @@ const renderStatsCard = (stats, options = {}) => {
     value: totalCommits,
     id: "commits",
   };
+  if (show.includes("contributions")) {
+    STATS.contributions = {
+      icon: icons.contribs,
+      label: "Contributions this year",
+      value: totalContributions,
+      id: "contributions",
+    };
+  }
   STATS.prs = {
     icon: icons.prs,
     label: i18n.t("statcard.prs"),

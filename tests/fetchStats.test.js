@@ -3,7 +3,14 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { calculateRank } from "../src/calculateRank.js";
 import { fetchStats } from "../src/fetchers/stats.js";
-import { expect, it, describe, beforeEach, afterEach } from "@jest/globals";
+import {
+  expect,
+  it,
+  describe,
+  beforeEach,
+  afterEach,
+  jest,
+} from "@jest/globals";
 
 // Test parameters.
 const data_stats = {
@@ -11,6 +18,9 @@ const data_stats = {
     user: {
       name: "Anurag Hazra",
       repositoriesContributedTo: { totalCount: 61 },
+      currentYearContributions: {
+        contributionCalendar: { totalContributions: 922 },
+      },
       contributionsCollection: {
         totalCommitContributions: 100,
         totalPullRequestReviewContributions: 50,
@@ -99,10 +109,46 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  jest.useRealTimers();
   mock.reset();
 });
 
 describe("Test fetchStats", () => {
+  it.each(["2026-12-31T23:59:59.000Z", "2027-01-01T00:00:00.000Z"])(
+    "fetches calendar-year contributions separately from commits at %s",
+    async (now) => {
+      jest.useFakeTimers({ now: new Date(now) });
+      mock.reset();
+      let requestData;
+      mock.onPost("https://api.github.com/graphql").reply((config) => {
+        requestData = JSON.parse(config.data);
+        return [
+          200,
+          {
+            data: {
+              user: {
+                ...data_stats.data.user,
+                currentYearContributions: {
+                  contributionCalendar: { totalContributions: 922 },
+                },
+              },
+            },
+          },
+        ];
+      });
+      const stats = await fetchStats("anuraghazra");
+      expect(stats.totalContributions).toBe(922);
+      expect(requestData.query).toContain(
+        "currentYearContributions: contributionsCollection",
+      );
+      expect(requestData.variables.contributionsFrom).toBe(
+        `${now.slice(0, 4)}-01-01T00:00:00.000Z`,
+      );
+      expect(requestData.variables.contributionsTo).toBe(now);
+      expect(stats.totalCommits).toBe(100);
+    },
+  );
+
   it("should fetch correct stats", async () => {
     let stats = await fetchStats("anuraghazra");
     const rank = calculateRank({
@@ -118,6 +164,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -154,6 +201,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -196,6 +244,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 1000,
       totalIssues: 200,
@@ -245,6 +294,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 1000,
       totalIssues: 200,
@@ -276,6 +326,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -307,6 +358,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -338,6 +390,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -367,6 +420,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,
@@ -396,6 +450,7 @@ describe("Test fetchStats", () => {
 
     expect(stats).toStrictEqual({
       contributedTo: 61,
+      totalContributions: 922,
       name: "Anurag Hazra",
       totalCommits: 100,
       totalIssues: 200,

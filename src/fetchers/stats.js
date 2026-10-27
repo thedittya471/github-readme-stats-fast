@@ -38,13 +38,18 @@ const GRAPHQL_REPOS_QUERY = `
 `;
 
 const GRAPHQL_STATS_QUERY = `
-  query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!) {
+  query userInfo($login: String!, $after: String, $includeMergedPullRequests: Boolean!, $includeDiscussions: Boolean!, $includeDiscussionsAnswers: Boolean!, $contributionsFrom: DateTime!, $contributionsTo: DateTime!) {
     user(login: $login) {
       name
       login
       contributionsCollection {
         totalCommitContributions,
         totalPullRequestReviewContributions
+      }
+      currentYearContributions: contributionsCollection(from: $contributionsFrom, to: $contributionsTo) {
+        contributionCalendar {
+          totalContributions
+        }
       }
       repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
         totalCount
@@ -120,6 +125,11 @@ const statsFetcher = async ({
   includeDiscussions,
   includeDiscussionsAnswers,
 }) => {
+  const now = new Date();
+  const contributionsFrom = new Date(
+    Date.UTC(now.getUTCFullYear(), 0, 1),
+  ).toISOString();
+  const contributionsTo = now.toISOString();
   let stats;
   let hasNextPage = true;
   let endCursor = null;
@@ -131,6 +141,8 @@ const statsFetcher = async ({
       includeMergedPullRequests,
       includeDiscussions,
       includeDiscussionsAnswers,
+      contributionsFrom,
+      contributionsTo,
     };
     let res = await retryer(fetcher, variables);
     if (res.data.errors) {
@@ -248,6 +260,7 @@ const fetchStats = async (
     mergedPRsPercentage: 0,
     totalReviews: 0,
     totalCommits: 0,
+    totalContributions: 0,
     totalIssues: 0,
     totalStars: 0,
     totalDiscussionsStarted: 0,
@@ -287,6 +300,8 @@ const fetchStats = async (
   const user = res.data.data.user;
 
   stats.name = user.name || user.login;
+  stats.totalContributions =
+    user.currentYearContributions.contributionCalendar.totalContributions;
 
   // if include_all_commits, fetch all commits using the REST API.
   if (include_all_commits) {

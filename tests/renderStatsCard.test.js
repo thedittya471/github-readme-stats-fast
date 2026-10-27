@@ -61,6 +61,32 @@ describe("Test renderStatsCard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it.each([0, 922])(
+    "shows calendar-year contributions (%i) only when requested",
+    (totalContributions) => {
+      const data = { ...stats, totalContributions };
+      document.body.innerHTML = renderStatsCard(data);
+      expect(
+        queryByTestId(document.body, "contributions"),
+      ).not.toBeInTheDocument();
+      document.body.innerHTML = renderStatsCard(data, {
+        show: ["contributions"],
+      });
+      expect(getByTestId(document.body, "contributions")).toHaveTextContent(
+        String(totalContributions),
+      );
+      expect(document.body).toHaveTextContent("Contributions this year:");
+      expect(getByTestId(document.body, "commits")).toHaveTextContent("200");
+      document.body.innerHTML = renderStatsCard(data, {
+        show: ["contributions"],
+        hide: ["contributions"],
+      });
+      expect(
+        queryByTestId(document.body, "contributions"),
+      ).not.toBeInTheDocument();
+    },
+  );
+
   it("should have proper name apostrophe", () => {
     document.body.innerHTML = renderStatsCard({ ...stats, name: "Anil Das" });
 

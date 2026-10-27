@@ -123,11 +123,13 @@ You can pass a query parameter `&hide=` to hide any specific stats with comma-se
 
 You can pass a query parameter `&show=` to show any specific additional stats with comma-separated values.
 
-> Options: `&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage`
+> Options: `&show=contributions,reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage`
 
 ```md
 ![Pranesh's GitHub stats](https://github-readme-stats-fast.vercel.app/api?username=pranesh-2005&show=reviews,discussions_started,discussions_answered,prs_merged,prs_merged_percentage)
 ```
+
+Use `&show=contributions` to add **Contributions this year**, fetched from GitHub's contribution calendar from January 1 (UTC) through the current time. This counts calendar contributions, including accessible private activity, separately from commits. Compare it with the current year selected on your GitHub profile; token permissions and caching can affect the displayed total. The existing `contribs` statistic counts repositories contributed to, not contribution events.
 
 ### Showing icons
 
@@ -342,7 +344,7 @@ If we don't support your language, please consider contributing! You can find mo
 | `disable_animations` | Disables all animations in the card. | boolean | `false` |
 | `ring_color` | Color of the rank circle. | string (hex color) | `2f80ed` |
 | `number_format` | Switches between two available formats for displaying the card values `short` (i.e. `6.6k`) and `long` (i.e. `6626`). | enum | `short` |
-| `show` | Shows [additional items](#showing-additional-individual-stats) on stats card (i.e. `reviews`, `discussions_started`, `discussions_answered`, `prs_merged` or `prs_merged_percentage`). | string (comma-separated values) | `null` |
+| `show` | Shows [additional items](#showing-additional-individual-stats) on stats card (i.e. `contributions`, `reviews`, `discussions_started`, `discussions_answered`, `prs_merged` or `prs_merged_percentage`). | string (comma-separated values) | `null` |
 
 > [!NOTE]\
 > When hide\_rank=`true`, the minimum card width is 270 px + the title length and padding.
